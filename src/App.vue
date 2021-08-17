@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Create & Update Post -->
     <div class="flex flex-col items-center space-y-10 py-5 bg-gray-800 md:mx-20">
       <h1 class="text-5xl text-green-300 font-bold uppercase tracking-wider">create blog</h1>
       <div class="flex flex-col items-center space-y-2">
@@ -21,14 +22,14 @@
       @click="up(blog.id)">update</button>
     </div>
 
-    <!-- preview -->
+    <!-- preview post-->
     <div class="flex flex-col  py-5 bg-gray-400 space-y-3 md:mx-20" >
       <p class="text-2xl">BlogTitle: <span class="">{{blog.title}}</span></p>
       <p class="text-2xl">BlogID: <span class="">{{blog.user_id}}</span></p>
       <p class="text-2xl">BlogContant:<br><span class="text-base">{{blog.body}}</span></p>
     </div>
       <div>
-        <!-- watch all blogs -->
+        <!-- watch all posts -->
         <div class="flex flex-col items-center py-5  bg-green-500 space-y-3 p-10 md:mx-20">
             <h1 class="text-5xl text-green-300 font-bold uppercase tracking-wider ">all blogs articals</h1>
             <div v-for="post in posts.data" :key="post.title" class="bg-gray-800 text-white p-10 text-center space-y-5">
@@ -45,25 +46,14 @@
 </template>
 
 <script>
+import { useStore } from '../store/mystore'
+import { mapWritableState } from 'pinia'
+import { mapActions } from 'pinia'
 
-
-
-export default {
-  
- data() {
-  return {
-    blog: {
-      title: "",
-      body: "",
-      user_id: "",
-    },
-    upblog: {
-      title: "default",
-      body: "default body",
-      user_id: "54",
-    },
-    posts: [],
-  }
+export default {  
+ computed : {
+   ...mapWritableState(useStore,['blog']),
+   ...mapWritableState(useStore,['posts'])
  },
 created() {
   this.axios.get('v1/posts').then(data => {
@@ -72,32 +62,19 @@ created() {
   })
 },
 methods: {
-  add() {
-    this.axios.post('v1/posts',this.blog).then(data =>{
-    console.log(data)
-    this.blog = ""
-    })
-    this.submitted = true
-  },
-  rm(id) {
-    this.axios.delete(`v1/posts/${id}`).then(data => {
-    console.log(data)
-    })
-    },
-  editPost(id) {
-    this.axios.get(`v1/posts/${id}`, this.blog).then(data => {
-    console.log(data)
-    let blog = data.data.data
-    this.blog = blog
-    })
-  },
-  up(id) {
-    this.axios.put(`v1/posts/${id}`, this.blog).then(data => {
-    console.log(data)
-    this.blog = ""
-    })
-  }
+  ...mapActions(useStore,['add']),
+  ...mapActions(useStore,['rm']),
+  ...mapActions(useStore,['editPost']),
+  ...mapActions(useStore,['up']),
+
+  actionBlog() {
+    this.add(this.blog),
+    this.rm(this.post),
+    this.editPost(this.blog),
+    this.up(this.blog)
+  }, 
 },
+
 }
 </script>
 
