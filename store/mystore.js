@@ -16,10 +16,16 @@ state() {
     }
 },
 actions: {
+    fetchPosts() {
+        axios.get('v1/users/63/posts').then(data => {
+        this.posts = data.data.data
+        })
+    },
     add() {
         axios.post('v1/posts',this.blog).then(data =>{
         console.log(data)
-        this.blog = ""
+        // console.log(this.posts);
+        this.posts.push(data.data.data)
         window.location.reload()
         })
     },
@@ -40,6 +46,7 @@ actions: {
         axios.put(`v1/posts/${id}`, this.blog).then(data => {
         console.log(data)
         this.blog = ""
+        window.location.reload()
         })
     }
 }

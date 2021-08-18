@@ -24,8 +24,6 @@ Vue.use(VueCompositionAPI)
 
 Vue.config.productionTip = false
 
-
-
 new Vue({
   render: h => h(App),
   pinia,
